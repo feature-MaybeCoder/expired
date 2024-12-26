@@ -1,0 +1,24 @@
+services:
+  backend:
+    build:
+      context: .
+    env_file: docker/vars/local/.env
+    volumes:
+      - .:/build
+    ports:
+      - 8010:8010
+    restart: "no"
+    networks:
+      - main_network
+
+  db:
+    image: postgres:latest
+    env_file: docker/vars/local/.env
+    volumes:
+      - ./docker/data/postgres-data:/var/lib/postgresql/data
+    networks:
+      - main_network
+
+
+networks:
+  main_network:
