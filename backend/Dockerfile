@@ -1,12 +1,12 @@
-FROM python:3.10-alpine
+FROM python:3.10
 LABEL authors="lastdarknes"
 
 # Define workdir
 WORKDIR /build
 
 # Update system
-RUN apk update
-RUN apk add curl
+RUN apt-get update && apt-get upgrade
+RUN apt-get install curl
 
 # Install Poetry
 RUN curl -sSL \
@@ -19,7 +19,10 @@ RUN curl -sSL \
 # Install dependencies
 ENV POETRY_VIRTUALENVS_CREATE=false
 COPY ./pyproject.toml ./poetry.lock* /build
-CMD rm -rf ~/.cache/pypoetry/{cache,artifacts}
+RUN pip3 install --upgrade pip && \
+    poetry env remove --all && \
+    poetry cache clear --all .
+
 RUN poetry install --no-root
 
 # Set PYTHONPATH environment variable
@@ -28,4 +31,3 @@ COPY . /build
 
 # Run app
 CMD uvicorn app.main:fa_app --reload --host 0.0.0.0 --port 8010
-#CMD python app/mock.py

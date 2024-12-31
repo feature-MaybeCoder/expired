@@ -2,14 +2,15 @@
 Module which contains base repositories.
 """
 
-from typing import Any, Generic, List, Optional, Type, TypeVar
+from typing import Any, Generic, Optional, Type, TypeVar
 
-import sqlalchemy as sa
-from app.models import base as base_model
 from sqlalchemy import ScalarResult, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-ModelType = TypeVar("ModelType", bound=base_model.Base)
+from app import db as db_config
+from app.models import base as base_model
+
+ModelType = TypeVar("ModelType", bound=base_model.BaseModel)
 
 
 class DbRepo(Generic[ModelType]):
@@ -21,7 +22,9 @@ class DbRepo(Generic[ModelType]):
     def __init__(self, model: Type[ModelType]):
         self.model = model
 
-    async def create(self, db: AsyncSession, **create_kwargs) -> ModelType:
+    async def create(
+        self, db: db_config.DefaultDBSessionClass, **create_kwargs
+    ) -> ModelType:
         """
         Create object.
 
@@ -41,7 +44,7 @@ class DbRepo(Generic[ModelType]):
         return new_obj
 
     async def get(
-        self, db: AsyncSession, *, obj_id: int
+        self, db: db_config.DefaultDBSessionClass, *, obj_id: int
     ) -> Optional[ModelType]:
         """
         Get a single object by ID.
@@ -59,7 +62,9 @@ class DbRepo(Generic[ModelType]):
 
         return result.scalar()
 
-    async def get_all(self, db: AsyncSession) -> ScalarResult[Any]:
+    async def get_all(
+        self, db: db_config.DefaultDBSessionClass
+    ) -> ScalarResult[Any]:
         """
         Get all objects.
 
@@ -74,7 +79,7 @@ class DbRepo(Generic[ModelType]):
         return result
 
     async def update(
-        self, db: AsyncSession, obj_id: int, **update_kwargs
+        self, db: db_config.DefaultDBSessionClass, obj_id: int, **update_kwargs
     ) -> None:
         """
         Update object.

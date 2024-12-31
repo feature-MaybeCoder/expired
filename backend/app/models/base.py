@@ -26,7 +26,7 @@ metadata = sa.MetaData(
 
 
 @as_declarative(metadata=metadata)
-class Base:
+class BaseModel:
     """
     Base model.
     """
