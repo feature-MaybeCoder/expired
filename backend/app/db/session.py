@@ -7,6 +7,8 @@ import sqlalchemy.orm
 from app.config import settings
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
+DefaultDBSessionClass = AsyncSession
+
 engine = create_async_engine(
     settings.DB_URI,
     future=True,
@@ -20,5 +22,5 @@ sessions_maker = sa.orm.sessionmaker(
     expire_on_commit=False,
     autoflush=False,
     bind=engine,
-    class_=AsyncSession,
+    class_=DefaultDBSessionClass,
 )
