@@ -1,29 +1,28 @@
-import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Layout from "./pages/Layout";
-import Home from "./pages/Home";
-import Blogs from "./pages/Blogs";
-import Contact from "./pages/Contact";
-import NoPage from "./pages/NoPage";
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './App.css'
+import RegisterPage from "@/pages/register/page"
+import RootPage from "@/pages/root/page"
+import { REGISTER_ROUTES } from '@/constants/routes/register'
+import { ROOT_ROUTES } from './constants/routes/root'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const router = createBrowserRouter([
+    {
+      path: REGISTER_ROUTES.register,
+      element: <RegisterPage/>
+    },
+    {
+      path: ROOT_ROUTES.root,
+      element: <RootPage/>
+    }
+  ])
 
   return (
-    BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="blogs" element={<Blogs />} />
-          <Route path="contact" element={<Contact />} />
-          <Route path="*" element={<NoPage />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <>
+      <RouterProvider router={router} />
+    </>
+  )
 }
 
 export default App
