@@ -11,6 +11,18 @@ services:
     networks:
       - main_network
 
+  # frontend:
+  #   build:
+  #     context: frontend/app
+  #   env_file: docker/vars/local/.env
+  #   volumes:
+  #     - ./frontend/app:/build
+  #   ports:
+  #     - 8010:8010
+  #   restart: "no"
+  #   networks:
+  #     - main_network
+
   db:
     image: postgres:latest
     env_file: docker/vars/local/.env
