@@ -35,3 +35,7 @@ export type PasswordRegistrationApiV1AuthPasswordRegisterPostData = {
 export type PasswordRegistrationApiV1AuthPasswordRegisterPostResponse = (Token);
 
 export type PasswordRegistrationApiV1AuthPasswordRegisterPostError = (HTTPValidationError);
+
+export type TestAuthApiV1AuthPasswordTestGetResponse = (Token);
+
+export type TestAuthApiV1AuthPasswordTestGetError = unknown;
