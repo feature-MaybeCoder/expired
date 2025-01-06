@@ -1,9 +1,7 @@
 import { createClient } from "@hey-api/openapi-ts"
-import fetch from 'node-fetch';
-import axios, {isCancel, AxiosError} from 'axios';
+import { Axios } from "axios"
 
-
-
+const axios = new Axios()
 try {
 
     const response = await axios.get("http://0.0.0.0:8010/openapi.json")
@@ -14,7 +12,7 @@ try {
         {
             client: "@hey-api/client-fetch",
             input: openapi,
-            output: "./src/api"
+            output: "../src/api"
         }
     )
 } catch(error) {
