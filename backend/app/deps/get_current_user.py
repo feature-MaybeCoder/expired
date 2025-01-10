@@ -27,10 +27,10 @@ async def get_current_user(
     if not creds:
         raise UnauthorizedError
     try:
-        firebase_uid = await firebase_auth_integration.adecode_token(creds.credentials)
+        firebase_user_data = await firebase_auth_integration.adecode_token(creds.credentials)
         user = await users_service.get_user_by_firebase_uid(
             db,
-            firebase_uid=firebase_uid
+            firebase_uid=firebase_user_data.firebase_uid
         )
     except InvalidTokenError:
         raise credentials_exception
