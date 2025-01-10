@@ -12,8 +12,6 @@ from app import constants, schemas
 
 
 class FirebaseAuthIntegration:
-    firebase_uid_field_name = "firebase_uid"
-
     @staticmethod
     def create_user(email: str, password: str) -> schemas.FirebaseUser:
         user = fba_auth.create_user(email=email, password=password)
