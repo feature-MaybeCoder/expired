@@ -27,7 +27,7 @@ class AuthTransactions:
             db, user_id=user.id, raw_password=password
         )
         if not authenticated:
-            raise ex.UnauthorizedError
+            raise ex.AuthorizationFailed
 
         firebase_user = await firebase_auth_integration.aget_user_by_email(
             email
