@@ -57,27 +57,24 @@ class FirebaseAuthIntegration:
             )
         return user
 
-    @staticmethod
-    async def decode_token(token: str):
-        return fba_auth.verify_id_token(id_token=token, check_revoked=True)
+    def decode_token(self, token: str) -> schemas.FirebaseUserData:
+        token_data = fba_auth.verify_id_token(id_token=token, check_revoked=True)
+        return schemas.FirebaseUserData(**token_data)
 
-    async def adecode_token(self, token: str) -> schemas.TokenData:
+    async def adecode_token(self, token: str) -> schemas.FirebaseUserData:
         loop = asyncio.get_event_loop()
         with ThreadPoolExecutor() as pool:
-            token_data = await loop.run_in_executor(
+            firebase_user_data = await loop.run_in_executor(
                 pool,
                 self.decode_token,
                 token,
             )
-        return schemas.TokenData.from_orm(token_data)
+        return firebase_user_data
 
     def create_custom_token(
         self, uid: str, payload: schemas.TokenData
     ) -> bytes:
         payload_dict = payload.dict()
-        payload_dict[self.firebase_uid_field_name] = str(
-            payload_dict[self.firebase_uid_field_name]
-        )
         return fba_auth.create_custom_token(
             uid=uid, developer_claims=payload_dict
         )
