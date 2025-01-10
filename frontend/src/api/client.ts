@@ -1,7 +1,8 @@
 import { createClient } from '@hey-api/client-fetch';
 import { authService } from '@/services/auth';
-import { getAuth } from 'firebase/auth';
 import { BEARER_AUTHORIZATION_PREFIX, HEADERS } from '@/constants/http';
+import { ROUTES_ALLOWED_WITHOUT_LOGIN } from '@/constants/auth';
+import { sessionAccessTokenName } from '@/constants/security';
 
 
 export const apiClient = createClient({
@@ -22,22 +23,21 @@ apiClient.interceptors.response.use((response) => {
 });
 
 apiClient.interceptors.request.use((request) => {
-    const currentUser = getAuth().currentUser
-    let accessToken = ""
-    if (currentUser){
-        const getIdToken = currentUser.getIdToken()
-        getIdToken.then((idToken) => {
-            accessToken = idToken
-            console.log("Got token", idToken)
-        })
-        getIdToken.catch((error) => {
-            console.error("Error getting id token: ", error)
-        })
-    }
+    const accessToken = localStorage.getItem(sessionAccessTokenName)
 
-    request.headers.set(
-        HEADERS.authorization, 
-        BEARER_AUTHORIZATION_PREFIX + accessToken
-    )
-    return request;
-});
+    if (location.pathname in ROUTES_ALLOWED_WITHOUT_LOGIN) {
+        return request
+    }
+    
+    if (accessToken){
+        request.headers.set(
+            HEADERS.authorization, 
+            BEARER_AUTHORIZATION_PREFIX + accessToken
+        )
+    }
+    
+    return request
+}
+)
+
+    
