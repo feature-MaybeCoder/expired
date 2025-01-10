@@ -21,7 +21,6 @@ export const firebaseAuthApp = getAuth(firebaseApp)
 
 getAuth().onAuthStateChanged((user) => {
   if (user) {
-    console.log("Auth changed user: ", user)
     firebaseAuthApp.updateCurrentUser(user)
     const getAccessToken = user.getIdToken()
     getAccessToken.then((accessToken) => {
