@@ -16,4 +16,10 @@ class NotFoundError(BaseCustomHTTPException):
 class UnauthorizedError(BaseCustomHTTPException):
     message = "Unauthorized."
     detail = "Unauthorized."
-    status_code = 403
+    status_code = 401
+
+
+class AuthorizationFailed(BaseCustomHTTPException):
+    message = "Authorization failed."
+    detail = "Authorization failed."
+    status_code = 400

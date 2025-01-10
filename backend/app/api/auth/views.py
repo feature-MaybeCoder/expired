@@ -4,6 +4,8 @@ from app import db as db_config
 from app import deps, schemas
 from app.transactions import auth_transactions
 
+
+router = fa.APIRouter(prefix="/auth", tags=["Auth"])
 password_router = fa.APIRouter(
     prefix="/password",
 )
@@ -29,3 +31,14 @@ async def password_registration(
     return await auth_transactions.register_user_with_email_and_password(
         db, email=body.email, password=body.raw_password
     )
+
+
+@password_router.get("/test")
+async def test_auth(
+    db: db_config.DefaultDBSessionClass = fa.Depends(deps.get_db),
+    current_user: schemas.User = fa.Depends(deps.get_current_user)
+) -> None:
+
+    return None
+
+router.include_router(password_router)

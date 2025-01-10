@@ -1,8 +1,6 @@
 """
 Users service.
 """
-from uuid import UUID
-
 from app import db as db_config
 from app import schemas
 from app.dals import user_dal
@@ -19,11 +17,12 @@ class UsersService:
 
         return user
 
-    async def get_user_by_firebase_uuid(
+    @staticmethod
+    async def get_user_by_firebase_uid(
         db: db_config.DefaultDBSessionClass,
-        uuid: UUID,
+        firebase_uid: str,
     ) -> schemas.User | None:
-        user = await user_dal.get_user_by_firebase_uuid(db, email=email)
+        user = await user_dal.get_user_by_firebase_uid(db, firebase_uid=firebase_uid)
 
         return user
 

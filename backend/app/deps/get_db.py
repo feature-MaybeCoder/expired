@@ -14,9 +14,10 @@ async def get_db() -> Generator[db_config.DefaultDBSessionClass, None, None]:
     """
     try:
         async with db_config.sessions_maker() as db:
-            return db
-    except SQLAlchemyError as e:
+            yield db
+    except (SQLAlchemyError, Exception) as e:
         LOGGER.exception(DB_ERROR_TEXT, e)
         await db.rollback()
+        raise e
     finally:
         await db.close()
