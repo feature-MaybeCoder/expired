@@ -19,24 +19,25 @@ apiKey: "AIzaSyDQWYgYssWJVe9_I4MRq1g6OKfCCR3Otis",
 const firebaseApp = initializeApp(firebaseConfig);
 export const firebaseAuthApp = getAuth(firebaseApp)
 
+
 onAuthStateChanged(firebaseAuthApp, (user) => {
   if (user) {
-    const getIdToken = user.getIdToken()
-    getIdToken.then((idToken) => {
-      localStorage.setItem(sessionAccessTokenName, idToken)
-      authService.processUserLoggedIn()
-    }
-  )
-    getIdToken.catch((error) => {
-      console.error("Error trying to get id token: ", error)
+    console.log(user)
+    const getAccessToken = user.getIdToken()
+    getAccessToken.then((accessToken) => {
+      authService.processUserLoggedIn(accessToken)
+    })
+    getAccessToken.catch((error) => {
+      console.error(error)
       authService.processNotLoggedInUser()
-    }
-  )
+    })
     
-  } else {
+  }
+   else {
     authService.processNotLoggedInUser()
   }
-});
+}
+)
 
 firebaseAuthApp.onIdTokenChanged((user) => {
   if (user) {
@@ -46,7 +47,6 @@ firebaseAuthApp.onIdTokenChanged((user) => {
     })
     getIdToken.catch((error) => {
       if (location.pathname !in ROUTES_ALLOWED_WITHOUT_LOGIN){
-        console.log()
         console.error(error)
         authService.processNotLoggedInUser()
       }
