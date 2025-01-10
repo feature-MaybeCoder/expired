@@ -4,7 +4,7 @@ import { ROOT_ROUTES } from "@/constants/routes/root"
 import { signInWithCustomToken } from "firebase/auth"
 import { firebaseAuthApp } from "@/firebase"
 import Cookies from "universal-cookie";
-import { sessionAccessTokenName, sessionCookieName } from "@/constants/security";
+import { sessionCookieName } from "@/constants/security";
 import { defaultLoginError } from "@/errors/login";
 
 
@@ -23,56 +23,40 @@ class LoginService{
      */
     public async login(email: string, raw_password: string): Promise<LoginData> {
         const cookies = new Cookies()
-        const response = new LoginData("")
-        const get_response = passwordAuthApiV1AuthPasswordAuthenticatePost(
-          {
-            client: apiClient,
-            body: {
-              email: email,
-              raw_password: raw_password,
-            }
-          },
-        )
-        get_response.then((value) => {
-          if (value.data){
-            const getUserCreds = signInWithCustomToken(
+        const result = new LoginData("")
+
+        try {
+          const response = await passwordAuthApiV1AuthPasswordAuthenticatePost(
+            {
+              client: apiClient,
+              body: {
+                email: email,
+                raw_password: raw_password,
+              }
+            },
+          )
+
+          if (response.data){
+            const userCreds = await signInWithCustomToken(
               firebaseAuthApp,
-              value.data.access_token
+              response.data.access_token
             )
 
-            getUserCreds.then((userCreds) => {
-              const getIdToken = userCreds.user.getIdToken()
-              const updateCurrentUser = firebaseAuthApp.updateCurrentUser(userCreds.user)
-              
-              updateCurrentUser.catch((error) => {
-                console.log(error)
-                throw defaultLoginError
-              })
-    
-              getIdToken.then((accessToken) => {
-                  localStorage.setItem(sessionAccessTokenName, accessToken)
-                  cookies.set(sessionCookieName, userCreds.user.refreshToken)
-                  response.redirectPath = ROOT_ROUTES.root
-                }   
-            
-              )
-            }
-            )
-            getUserCreds.catch((error) => {
-                console.log(error)
-                throw defaultLoginError
-            }
-          )  
+            await firebaseAuthApp.updateCurrentUser(userCreds.user)
+            cookies.set(sessionCookieName, userCreds.user.refreshToken)
+            result.redirectPath = ROOT_ROUTES.root 
+
           } else {
             throw defaultLoginError
           }
-        })
-        get_response.catch((error) => {
+        } catch (error) {
+          if (error instanceof Error) {
             console.error(error)
             throw defaultLoginError
+          }
         }
-        )
-    return response
+
+    return result
 }
 }
 
