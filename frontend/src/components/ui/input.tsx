@@ -1,22 +1,41 @@
-import * as React from "react"
+
 
 import { cn } from "@/lib/utils"
+import {InputHTMLAttributes } from "react"
 
-const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
-  ({ className, type, ...props }, ref) => {
+export interface InputProps   
+extends InputHTMLAttributes<HTMLInputElement>
+{
+  errorMessage: string
+  isError: boolean
+}
+
+const Input = ({ className, type, errorMessage, isError = false, ...props }: InputProps) => {
+    let displayError = <div></div>
+    if (isError) {
+      className += " border-red-600 "
+      displayError = 
+      <div>
+        <p className="text-red-600 text-left p-1">{errorMessage}</p>
+      </div>
+    }
+    
     return (
-      <input
+      <div>
+        <input
         type={type}
         className={cn(
           "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
           className
         )}
-        ref={ref}
         {...props}
       />
+      {displayError}
+      </div>
+      
     )
   }
-)
+
 Input.displayName = "Input"
 
 export { Input }
