@@ -1,0 +1,20 @@
+{
+  "name": "exchange_custom_token",
+  "version": "1.0.0",
+  "description": "Exchange custom token to login",
+  "license": "ISC",
+  "author": "maybeCoder",
+  "type": "commonjs",
+  "main": "scripts.js",
+  "scripts": {
+    "main": "node main.js"
+  },
+  "dependencies": {
+    "firebase": "^11.1.0",
+    "prompt-sync": "^4.2.0",
+    "typescript": "^5.7.3"
+  },
+  "exports": {
+    "main": "./main.js"
+  }
+}
