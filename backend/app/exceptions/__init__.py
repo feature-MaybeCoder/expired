@@ -1,1 +1,1 @@
-from .http import GeneralException, NotFoundError, UnauthorizedError
+from .http import GeneralException, NotFoundError, UnauthorizedError, AuthorizationFailed
