@@ -38,11 +38,11 @@ class UserDal(BaseDal):
         return await user_db_repo.get(db, obj_id=user_id)
 
     @staticmethod
-    async def get_user_by_firebase_uuid(
-        db: db_config.DefaultDBSessionClass, firebase_uuid: EmailStr
+    async def get_user_by_firebase_uid(
+        db: db_config.DefaultDBSessionClass, firebase_uid: str
     ) -> schemas.User | None:
         query = sa.select(models.User).where(
-            models.User.firebase_uuid == firebase_uuid
+            models.User.firebase_uid == firebase_uid
         )
         user_orm = await db.execute(query)
         user_orm = user_orm.scalar()
