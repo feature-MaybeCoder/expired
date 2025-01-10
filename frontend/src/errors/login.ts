@@ -1,0 +1,1 @@
+export const defaultLoginError = new Error("Icorrect email or password.")

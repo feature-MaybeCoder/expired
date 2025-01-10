@@ -1,0 +1,1 @@
+export const defaultRegistrationError = new Error("Something went wrong, try again later.")
