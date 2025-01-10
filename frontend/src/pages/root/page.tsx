@@ -1,9 +1,9 @@
 import { ABOUT_ROUTES } from "@/constants/routes/about"
 import { DASHBOARD_ROUTES } from "@/constants/routes/dashboard"
-import { firebaseAuthApp } from "@/firebase"
+import { authService } from "@/services/auth"
 
 export default function RootPage() {
-    if (firebaseAuthApp.currentUser) {
+    if (authService.isCurrentUserSignedIn()) {
         location.replace(DASHBOARD_ROUTES.dashboard)
     } else {
         location.replace(ABOUT_ROUTES.about)
