@@ -24,19 +24,18 @@ export function LoginForm({
   const [passwordState, setPasswordState] = useState("")
   const [descriptionState, descriptionChangeState] = useState("Enter your email below to login to your account.")
   const [errorState, errorChangeState] = useState(false)
+
   const navigate = useNavigate()
 
   const login = (email: string, raw_password: string) => {
     const tryLogin = loginService.login(email, raw_password)
 
-    try {
-      console.log("Trying to login")
-      tryLogin.then((loginData) => {
-        if (loginData.redirectPath) {
-          navigate(loginData.redirectPath)
-        }
-      })
-    } catch (error: unknown) {
+    tryLogin.then((loginData) => {
+      if (loginData.redirectPath) {
+        navigate(loginData.redirectPath)
+      }
+    })
+    tryLogin.catch((error) => {
       console.log("Login error")
       errorChangeState(true)
       if (error instanceof Error) {
@@ -45,7 +44,7 @@ export function LoginForm({
         descriptionChangeState("Unexpected error!")
       )
       console.error(error)
-    }
+    })
 
   }
 
