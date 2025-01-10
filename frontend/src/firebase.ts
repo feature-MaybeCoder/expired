@@ -1,8 +1,7 @@
 // Import the necessary Firebase modules
-import {getAuth, onAuthStateChanged } from "firebase/auth";
+import {getAuth } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import "firebase/auth";
-import { sessionAccessTokenName } from "./constants/security";
 import { authService } from "./services/auth";
 import { ROUTES_ALLOWED_WITHOUT_LOGIN } from "./constants/auth";
 
@@ -20,12 +19,13 @@ const firebaseApp = initializeApp(firebaseConfig);
 export const firebaseAuthApp = getAuth(firebaseApp)
 
 
-onAuthStateChanged(firebaseAuthApp, (user) => {
+getAuth().onAuthStateChanged((user) => {
   if (user) {
-    console.log(user)
+    console.log("Auth changed user: ", user)
+    firebaseAuthApp.updateCurrentUser(user)
     const getAccessToken = user.getIdToken()
     getAccessToken.then((accessToken) => {
-      authService.processUserLoggedIn(accessToken)
+      authService.processUserLoggedIn(accessToken, user.refreshToken)
     })
     getAccessToken.catch((error) => {
       console.error(error)
@@ -33,17 +33,15 @@ onAuthStateChanged(firebaseAuthApp, (user) => {
     })
     
   }
-   else {
-    authService.processNotLoggedInUser()
-  }
+ 
 }
 )
 
-firebaseAuthApp.onIdTokenChanged((user) => {
+getAuth().onIdTokenChanged((user) => {
   if (user) {
     const getIdToken = user.getIdToken(true)
     getIdToken.then((idToken) => {
-      localStorage.setItem(sessionAccessTokenName, idToken)
+      authService.processUserLoggedIn(idToken, user.refreshToken)
     })
     getIdToken.catch((error) => {
       if (location.pathname !in ROUTES_ALLOWED_WITHOUT_LOGIN){
