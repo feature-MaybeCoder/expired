@@ -4,6 +4,8 @@ from app import db as db_config
 from app import deps, schemas
 from app.transactions import auth_transactions
 
+
+router = fa.APIRouter(prefix="/auth", tags=["Auth"])
 password_router = fa.APIRouter(
     prefix="/password",
 )
