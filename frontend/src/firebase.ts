@@ -1,9 +1,7 @@
 // Import the necessary Firebase modules
-import {getAuth } from "firebase/auth";
+import {browserSessionPersistence, getAuth, setPersistence } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import "firebase/auth";
-import { authService } from "./services/auth";
-import { ROUTES_ALLOWED_WITHOUT_LOGIN } from "./constants/auth";
 
 const firebaseConfig = {
 apiKey: "AIzaSyDQWYgYssWJVe9_I4MRq1g6OKfCCR3Otis",
@@ -18,38 +16,12 @@ apiKey: "AIzaSyDQWYgYssWJVe9_I4MRq1g6OKfCCR3Otis",
 const firebaseApp = initializeApp(firebaseConfig);
 export const firebaseAuthApp = getAuth(firebaseApp)
 
+// firebaseAuthApp.onAuthStateChanged((user) => {
+//   if (user) {
+//     firebaseAuthApp.updateCurrentUser(user)
+//   } else {
+//     firebaseAuthApp.updateCurrentUser(null)
+//   }
+// })
 
-getAuth().onAuthStateChanged((user) => {
-  if (user) {
-    firebaseAuthApp.updateCurrentUser(user)
-    const getAccessToken = user.getIdToken()
-    getAccessToken.then((accessToken) => {
-      authService.processUserLoggedIn(accessToken, user.refreshToken)
-    })
-    getAccessToken.catch((error) => {
-      console.error(error)
-      authService.processNotLoggedInUser()
-    })
-    
-  }
- 
-}
-)
-
-getAuth().onIdTokenChanged((user) => {
-  if (user) {
-    const getIdToken = user.getIdToken(true)
-    getIdToken.then((idToken) => {
-      authService.processUserLoggedIn(idToken, user.refreshToken)
-    })
-    getIdToken.catch((error) => {
-      if (location.pathname !in ROUTES_ALLOWED_WITHOUT_LOGIN){
-        console.error(error)
-        authService.processNotLoggedInUser()
-      }
-      
-    })
-  } else {
-    authService.processNotLoggedInUser()
-  }
-})
+await setPersistence(firebaseAuthApp, browserSessionPersistence); // Changes persistence to session only
