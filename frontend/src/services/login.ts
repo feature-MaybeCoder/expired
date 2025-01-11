@@ -2,10 +2,10 @@ import { passwordAuthApiV1AuthPasswordAuthenticatePost } from "@/api/sdk.gen";
 import { apiClient } from "@/api/client";
 import { ROOT_ROUTES } from "@/constants/routes/root"
 import { signInWithCustomToken } from "firebase/auth"
-import { firebaseAuthApp } from "@/firebase"
 import Cookies from "universal-cookie";
 import { sessionCookieName } from "@/constants/security";
 import { defaultLoginError } from "@/errors/login";
+import { firebaseAuthApp } from "@/firebase";
 
 
 
@@ -21,7 +21,7 @@ class LoginService{
     /**
      * login
      */
-    public async login(email: string, raw_password: string): Promise<LoginData> {
+    public async loginWithEmailAndPassword(email: string, raw_password: string): Promise<LoginData> {
         const cookies = new Cookies()
         const result = new LoginData("")
 
