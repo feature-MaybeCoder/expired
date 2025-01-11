@@ -91,7 +91,7 @@ export function RegisterForm({
 
 return (
   <div className={cn("flex flex-col gap-6", className)} {...props}>
-    <Card>
+    <Card className="inline-block h-9/12 max-h-9/12 w-full max-w-full">
       <CardHeader>
         <CardTitle className="text-2xl">Sign up</CardTitle>
         <CardDescriptionWithError isError={errorState}>
