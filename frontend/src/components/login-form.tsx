@@ -28,7 +28,7 @@ export function LoginForm({
   const navigate = useNavigate()
 
   const login = (email: string, raw_password: string) => {
-    const tryLogin = loginService.login(email, raw_password)
+    const tryLogin = loginService.loginWithEmailAndPassword(email, raw_password)
 
     tryLogin.then((loginData) => {
       if (loginData.redirectPath) {
@@ -89,7 +89,7 @@ export function LoginForm({
                 </div>
                 <Input
                 isError={false}
-                errorMessage={""}
+                errorMessages={[""]}
                 onChange={(e) => {setPasswordState(e.target.value)}}
                 value={passwordState}
                 id="password"
