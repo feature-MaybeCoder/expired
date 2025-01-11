@@ -6,6 +6,7 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
 from firebase_admin import auth as fba_auth
+from firebase_admin.auth import UserNotFoundError
 from pydantic import EmailStr
 
 from app import constants, schemas
@@ -36,9 +37,10 @@ class FirebaseAuthIntegration:
     def get_user_by_email(
         email: EmailStr,
     ) -> schemas.FirebaseUser | None:
-        user = fba_auth.get_user_by_email(email=email)
-        if user is None:
-            return user
+        try:
+            user = fba_auth.get_user_by_email(email=email)
+        except UserNotFoundError:
+            return None
 
         return schemas.FirebaseUser(
             uid=user.uid,

@@ -11,6 +11,10 @@ init_firebase_app(settings.FIREBASE_CERTS)
 fa_app = fa.FastAPI()
 fa_app.include_router(router)
 fa_app.add_middleware(
-    CORSMiddleware, allow_origins=["*"],  allow_credentials=True, allow_methods=["*"], allow_headers=["*"],
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 fa_app.add_exception_handler(Exception, handle_exceptions)
