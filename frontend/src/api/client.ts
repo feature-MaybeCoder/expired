@@ -1,7 +1,7 @@
 import { createClient } from '@hey-api/client-fetch';
-import { authService } from '@/services/auth';
 import { BEARER_AUTHORIZATION_PREFIX, HEADERS } from '@/constants/http';
 import { ROUTES_ALLOWED_WITHOUT_LOGIN } from '@/constants/auth';
+import { LOGIN_ROUTES } from '@/constants/routes/login';
 import { sessionAccessTokenName } from '@/constants/security';
 
 
@@ -16,7 +16,7 @@ apiClient.interceptors.response.use((response) => {
         response.status == 401
 
     ){
-        authService.processNotLoggedInUser()
+        location.replace(LOGIN_ROUTES.login)
     }
     
     return response;
@@ -24,18 +24,21 @@ apiClient.interceptors.response.use((response) => {
 
 apiClient.interceptors.request.use((request) => {
     const accessToken = localStorage.getItem(sessionAccessTokenName)
-
     if (location.pathname in ROUTES_ALLOWED_WITHOUT_LOGIN) {
         return request
     }
-    
-    if (accessToken){
+
+    if (!accessToken && location.pathname !in ROUTES_ALLOWED_WITHOUT_LOGIN) {
+        location.replace(LOGIN_ROUTES.login)
+    } 
+
+    if (accessToken) {
         request.headers.set(
             HEADERS.authorization, 
             BEARER_AUTHORIZATION_PREFIX + accessToken
         )
     }
-    
+   
     return request
 }
 )
