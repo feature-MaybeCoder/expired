@@ -49,7 +49,7 @@ const EmailInput = ({ className, onChange, ...props }: EmailInputProps) => {
     return (
       <div>
         <Input
-        errorMessage={emailState.errorText}
+        errorMessages={[emailState.errorText]}
         isError={emailState.isError}
         onChange={onEmailChange}
         type="email"
