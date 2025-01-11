@@ -12,6 +12,9 @@ import { DASHBOARD_ROUTES } from './constants/routes/dashboard'
 import DashboardPage from './pages/dashboard/page'
 import { ABOUT_ROUTES } from './constants/routes/about'
 import AboutPage from './pages/about/page'
+import { LOGOUT_ROUTES } from './constants/routes/logout'
+import LogoutPage from './pages/logout/page'
+import { AuthProvider } from './components/auth/auth-provider'
 
 function App() {
   const router = createBrowserRouter([
@@ -35,13 +38,19 @@ function App() {
       path: ABOUT_ROUTES.about,
       element: <AboutPage/>
     },
+    {
+      path: LOGOUT_ROUTES.logout,
+      element: <LogoutPage/>
+    },
   ])
 
   return (
     <>
+      <AuthProvider>
       <Provider store={store}>
         <RouterProvider router={router} />
       </Provider>
+      </AuthProvider>
     </>
   )
 }

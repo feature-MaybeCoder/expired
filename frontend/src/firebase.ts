@@ -16,12 +16,5 @@ apiKey: "AIzaSyDQWYgYssWJVe9_I4MRq1g6OKfCCR3Otis",
 const firebaseApp = initializeApp(firebaseConfig);
 export const firebaseAuthApp = getAuth(firebaseApp)
 
-// firebaseAuthApp.onAuthStateChanged((user) => {
-//   if (user) {
-//     firebaseAuthApp.updateCurrentUser(user)
-//   } else {
-//     firebaseAuthApp.updateCurrentUser(null)
-//   }
-// })
 
 await setPersistence(firebaseAuthApp, browserSessionPersistence); // Changes persistence to session only
