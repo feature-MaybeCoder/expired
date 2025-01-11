@@ -6,19 +6,28 @@ import {InputHTMLAttributes } from "react"
 export interface InputProps   
 extends InputHTMLAttributes<HTMLInputElement>
 {
-  errorMessage: string
+  errorMessages: string[]
   isError: boolean
 }
 
-const Input = ({ className, type, errorMessage, isError = false, ...props }: InputProps) => {
-    let displayError = <div></div>
-    if (isError) {
-      className += " border-red-600 "
-      displayError = 
-      <div>
-        <p className="text-red-600 text-left p-1">{errorMessage}</p>
-      </div>
+const Input = ({ className, type, errorMessages, isError = false, ...props }: InputProps) => {
+    const prepareErrors = () => {
+      const displayErrors: JSX.Element[] = []
+      if (isError) {
+        className += " border-red-600 "
+        for (let i = 0; i < errorMessages.length; i++) {
+          const errorMessage = errorMessages[i];
+          displayErrors.push(
+            <div>
+            <p className="text-red-600 text-left p-1">{errorMessage}</p>
+            </div>
+          )
+        }
+        
+      }
+      return displayErrors
     }
+    
     
     return (
       <div>
@@ -30,7 +39,7 @@ const Input = ({ className, type, errorMessage, isError = false, ...props }: Inp
         )}
         {...props}
       />
-      {displayError}
+      {prepareErrors()}
       </div>
       
     )
