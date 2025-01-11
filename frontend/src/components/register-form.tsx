@@ -18,12 +18,7 @@ import { validatePasswordForRegister } from "@/utils/validation"
 
 import { LOGIN_ROUTES } from "@/constants/routes/login"
 
-const defaultPasswordErrorText = "^(?=.*[a-z]): Ensures at least one lowercase letter. \n \
-(?=.*[A-Z]): Ensures at least one uppercase letter. \n \
-(?=.*d): Ensures at least one digit. \n \
-(?=.*[@$!%*?&]): Ensures at least one special character. \n \
-[A-Za-zd@$!%*?&]{8,}$: Ensures the password is at least 8 characters long. \n \
-"
+      
 
 export function RegisterForm({
   className,
@@ -34,7 +29,7 @@ export function RegisterForm({
   const [emailState, emailChangeState] = useState("")
   const [passwordState, passwordChangeState] = useState({
       value: "",
-      errorText: "",
+      errorTexts: [""],
       isError: false
     }
 )
@@ -42,33 +37,56 @@ export function RegisterForm({
   const navigate = useNavigate()
 
   const onPasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
-      const isPasswordValid = validatePasswordForRegister(event.target.value)
+
+      let password = event.target.value
+      if (password == undefined) {
+        password = ""
+      }
+      const errors = validatePasswordForRegister(password)
       passwordChangeState(
         {
           value: event.target.value,
-          isError: !isPasswordValid,
-          errorText: defaultPasswordErrorText
+          isError: errors.length != 0,
+          errorTexts: errors
         }
       )
   }
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const registrationAttempt = registrationService.registerWithEmailAndPassword(
-      emailState,
-      passwordState.value
-    )
 
-    registrationAttempt.then(() => {
-      navigate(ROOT_ROUTES.root)
-    }
-    )
-    registrationAttempt.catch((error) => {
+    // Check errors
+    if (passwordState.isError) {
       errorChangeState(true)
       descriptionChangeState(
-        error
+        "Invalid email or password"
+      )
+
+    } else {
+      const registrationAttempt = registrationService.registerWithEmailAndPassword(
+        emailState,
+        passwordState.value
+      )
+  
+      registrationAttempt.then(() => {
+        navigate(ROOT_ROUTES.root)
+      }
+      )
+      registrationAttempt.catch((error) => {
+        errorChangeState(true)
+        if (error instanceof Error) {
+          descriptionChangeState(
+            error.message
+          )
+        } else {
+          descriptionChangeState(
+            "Unknown error"
+          )
+        }
+        
+      }
       )
     }
-    )
+    
   }
 
 return (
@@ -101,7 +119,7 @@ return (
               </div>
               <Input
               isError={passwordState.isError}
-              errorMessage={""}
+              errorMessages={passwordState.errorTexts}
               value={passwordState.value}
               onChange={onPasswordChange}
               id="password"
