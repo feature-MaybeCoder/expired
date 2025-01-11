@@ -19,7 +19,7 @@ const Input = ({ className, type, errorMessages, isError = false, ...props }: In
           const errorMessage = errorMessages[i];
           displayErrors.push(
             <div>
-            <p className="text-red-600 text-left p-1">{errorMessage}</p>
+            <p className="text-red-600 text-sm text-left p-1">{errorMessage}</p>
             </div>
           )
         }
